@@ -87,7 +87,8 @@ class UsersController < ApplicationController
   def authenticate     
      usr = params[:userName]
      pwd = params[:password]
-     @getUser = User.find(:all, :conditions => "userName = '#{usr}' AND password = '#{pwd}'")     
+     # @getUser = User.find(:all, :conditions => "userName = '#{usr}' AND password = '#{pwd}'")
+     @getUser = User.where("userName = ? AND password = ?", params[:userName], params[:password])     
      if (@getUser!=[])       
        respond_to do |format| 
         format.html { render :json => {:success => true, :Data => @getUser}, :callback => params[:callback] }
