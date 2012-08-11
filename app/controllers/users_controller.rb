@@ -83,9 +83,9 @@ class UsersController < ApplicationController
     end
   end
   
-  # http://vm-wgo-ror.herokuapp.com/users/authenticate?userName=ramy&password=123456
+  # http://wgo-ror.herokuapp.com/users/authenticate?userName=ramy&password=123456
   def authenticate     
-     @getUser = User.find(:all, :conditions => "userName = '#{params[:userName]}' AND password = '#{params[:password]}'")     
+     @getUser = User.find(:all, :conditions => "userName = 'params[:userName]' AND password = 'params[:password]'")     
      if (@getUser!=[])       
        respond_to do |format| 
         format.html { render :json => {:success => true, :Data => @getUser}, :callback => params[:callback] }
@@ -99,16 +99,13 @@ class UsersController < ApplicationController
      end
   end
   
-  # http://vm-wgo-ror.herokuapp.com/users/insertUser?userName=yrkapil&password=123456&email=yrkapil@gmail.com
+  # http://wgo-ror.herokuapp.com/users/insertUser?userName=yrkapil&password=123456&email=yrkapil@gmail.com
   def insertUser
-    #params[:user][:userName] = '#{params[:userName]}'
-    #params[:user][:password] = '#{params[:password]}'
-    #params[:user][:email] = '#{params[:email]}'    
-    query = "INSERT INTO users (userName,password,email,created_at,updated_at) VALUES ('#{params[:userName]}', '#{params[:password]}', '#{params[:email]}',current_date,current_date)"
+    query = "INSERT INTO users (userName,password,email,created_at,updated_at) VALUES (params[:userName], params[:password], params[:email],current_date,current_date)"
     ActiveRecord::Base.connection.execute(query); 
   end
   
-  # http://vm-wgo-ror.herokuapp.com/users/saveUser?id=1&userName=yrkapil&password=123456&email=yrkapil@gmail.com  
+  # http://wgo-ror.herokuapp.com/users/saveUser?id=1&userName=yrkapil&password=123456&email=yrkapil@gmail.com  
   def saveUser
      @user = User.find(params[:id])              
      @user.update_attributes(:userName => params[:userName], :password => params[:password], :email => params[:email] )
