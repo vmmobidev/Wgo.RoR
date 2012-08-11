@@ -85,7 +85,9 @@ class UsersController < ApplicationController
   
   # http://wgo-ror.herokuapp.com/users/authenticate?userName=ramy&password=123456
   def authenticate     
-     @getUser = User.find(:all, :conditions => "userName = 'params[:userName]' AND password = 'params[:password]'")     
+     usr = params[:userName]
+     pwd = params[:password]
+     @getUser = User.find(:all, :conditions => "userName = '#{usr}' AND password = '#{pwd}'")     
      if (@getUser!=[])       
        respond_to do |format| 
         format.html { render :json => {:success => true, :Data => @getUser}, :callback => params[:callback] }
