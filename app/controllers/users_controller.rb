@@ -88,10 +88,17 @@ class UsersController < ApplicationController
      usr = params[:userName]
      pwd = params[:password]
      @getUser = User.where("userName = ? AND password = ?", params[:userName], params[:password])     
-      respond_to do |format|
+     if (@getUser!=[])       
+       respond_to do |format| 
         format.html { render :json => {:success => true, :Data => @getUser}, :callback => params[:callback] }
         format.json { render :json => {:success => true, :Data => @getUser}, :callback => params[:callback] }
+       end
+     else           
+      respond_to do |format|
+        format.html { render :json => {:success => false, :Data => @getUser}, :callback => params[:callback] }
+        format.json { render :json => {:success => false, :Data => @getUser}, :callback => params[:callback] }
       end 
+     end
   end
   
   # http://wgo-ror.herokuapp.com/users/insertUser?userName=yrkapil&password=123456&email=yrkapil@gmail.com
