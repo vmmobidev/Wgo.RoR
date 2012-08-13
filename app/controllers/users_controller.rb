@@ -8,7 +8,7 @@ class UsersController < ApplicationController
                         :offset =>  @offset
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render :json => {:success => true, :Data => @users}, :callback => params[:callback] }
+      format.json { render :json => {:Success => true, :Data => @users}, :callback => params[:callback] }
     end
   end
 
@@ -73,6 +73,7 @@ class UsersController < ApplicationController
 
   # DELETE /users/1
   # DELETE /users/1.json
+  # http://localhost:3000/users/destroy/1
   def destroy
     @user = User.find(params[:id])
     @user.destroy
@@ -83,35 +84,94 @@ class UsersController < ApplicationController
     end
   end
   
-  # http://wgo-ror.herokuapp.com/users/authenticate?userName=ramy&password=123456
+  # This function is used to authenticate an user
+  # http://localhost:3000/users/authenticate
   def authenticate     
      usr = params[:userName]
      pwd = params[:password]
-     @getUser = User.where("userName = ? AND password = ?", params[:userName], params[:password])     
+     @getUser = User.where("userName = ? AND password = ?", params[:userName], params[:password])       
      if (@getUser!=[])       
        respond_to do |format| 
-        format.html { render :json => {:success => true, :Data => @getUser}, :callback => params[:callback] }
-        format.json { render :json => {:success => true, :Data => @getUser}, :callback => params[:callback] }
+        format.html { render :json => {:Success => true, :Data => @getUser}, :callback => params[:callback] }
+        format.json { render :json => {:Success => true, :Data => @getUser}, :callback => params[:callback] }
        end
      else           
       respond_to do |format|
-        format.html { render :json => {:success => false, :Data => @getUser}, :callback => params[:callback] }
-        format.json { render :json => {:success => false, :Data => @getUser}, :callback => params[:callback] }
+        format.html { render :json => {:Success => false, :Data => @getUser}, :callback => params[:callback] }
+        format.json { render :json => {:Success => false, :Data => @getUser}, :callback => params[:callback] }
       end 
      end
   end
   
-  # http://wgo-ror.herokuapp.com/users/insertUser?userName=yrkapil&password=123456&email=yrkapil@gmail.com
+  # This function is used to Create an new User
+  # http://localhost:3000/users/insertUser
   def insertUser
-    query = "INSERT INTO users (userName,password,email,created_at,updated_at) VALUES (params[:userName], params[:password], params[:email],current_date,current_date)"
-    ActiveRecord::Base.connection.execute(query); 
+    query = "INSERT INTO users (userName,password,email,created_at,updated_at) VALUES ('#{params[:userName]}', '#{params[:password]}', '#{params[:email]}',current_date,current_date)"
+    ActiveRecord::Base.connection.execute(query)
+    if(ActiveRecord::Base.connection.execute(query))
+      respond_to do |format| 
+          format.html { render :json => {:Success => true}, :callback => params[:callback] }
+          format.json { render :json => {:Success => true}, :callback => params[:callback] }
+         end
+       else           
+        respond_to do |format|
+          format.html { render :json => {:Success => false}, :callback => params[:callback] }
+          format.json { render :json => {:Success => false}, :callback => params[:callback] }
+        end 
+       end 
   end
   
-  # http://wgo-ror.herokuapp.com/users/saveUser?id=1&userName=yrkapil&password=123456&email=yrkapil@gmail.com  
-  def saveUser
+  # This function is used to edit an existing user and update
+  # http://localhost:3000/users/editUser
+  def editUser
      @user = User.find(params[:id])              
      @user.update_attributes(:userName => params[:userName], :password => params[:password], :email => params[:email] )
-  end 
+    if(@user.update_attributes(:userName => params[:userName], :password => params[:password], :email => params[:email] ))
+      respond_to do |format| 
+          format.html { render :json => {:Success => true}, :callback => params[:callback] }
+          format.json { render :json => {:Success => true}, :callback => params[:callback] }
+         end
+       else           
+        respond_to do |format|
+          format.html { render :json => {:Success => false}, :callback => params[:callback] }
+          format.json { render :json => {:Success => false}, :callback => params[:callback] }
+        end 
+    end 
+  end
+  
+  # This function is used to Create an new User or Edit an existing user and update
+  # http://localhost:3000/users/saveUser
+  def saveUser
+    if(params[:id]!='')
+        @user = User.find(params[:id])              
+        @user.update_attributes(:userName => params[:userName], :password => params[:password], :email => params[:email] )
+       if(@user.update_attributes(:userName => params[:userName], :password => params[:password], :email => params[:email] ))
+         respond_to do |format| 
+             format.html { render :json => {:Success => true}, :callback => params[:callback] }
+             format.json { render :json => {:Success => true}, :callback => params[:callback] }
+            end
+          else           
+           respond_to do |format|
+             format.html { render :json => {:Success => false}, :callback => params[:callback] }
+             format.json { render :json => {:Success => false}, :callback => params[:callback] }
+           end       
+       end
+    else
+       query = "INSERT INTO users (userName,password,email,created_at,updated_at) VALUES ('#{params[:userName]}', '#{params[:password]}', '#{params[:email]}',current_date,current_date)"
+       ActiveRecord::Base.connection.execute(query)
+       if(ActiveRecord::Base.connection.execute(query))
+         respond_to do |format| 
+             format.html { render :json => {:Success => true}, :callback => params[:callback] }
+             format.json { render :json => {:Success => true}, :callback => params[:callback] }
+            end
+          else           
+           respond_to do |format|
+             format.html { render :json => {:Success => false}, :callback => params[:callback] }
+             format.json { render :json => {:Success => false}, :callback => params[:callback] }
+           end 
+       end
+    end  
+  end  
   
   
 end

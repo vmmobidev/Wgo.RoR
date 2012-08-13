@@ -1,9 +1,11 @@
 WgoRor::Application.routes.draw do
-  
-  match 'users/saveUser' => 'users#saveUser', :as => :saveUser
+
+  match 'users/saveUser' => 'users#saveUser', :as => :saveUser  
+  match 'users/saveUser' => 'users#editUser', :as => :editUser
   match 'users/destroy/:id' => 'users#destroy', :as => :destroy
   match 'users/authenticate' => 'users#authenticate', :as => :authenticate
   match 'users/insertUser' => 'users#insertUser', :as => :insertUser
+  match 'users/:id/update' => 'users#update', :as => :update
   
   resources :users
 

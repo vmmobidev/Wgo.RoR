@@ -9,7 +9,7 @@ class FestivalsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render :json => {:success => true, :Data => @festivals}, :callback => params[:callback] }
+      format.json { render :json => {:Success => true, :Data => @festivals}, :callback => params[:callback] }
     end
   end
 
